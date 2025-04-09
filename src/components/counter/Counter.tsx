@@ -1,17 +1,33 @@
-import './Counter.css'
+import { create } from "zustand";
+import "./Counter.css";
 
+// ✅ Define the store's state and actions
+interface BearStore {
+  bears: number;
+  increasePopulation: () => void;
+  removeAllBears: () => void;
+  updateBears: (newBears: number) => void;
+}
 
-const bearCounterStore = create((set) => ({)
+// ✅ Define Zustand store with type
+const useStore = create<BearStore>((set) => ({
+  bears: 0,
+  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+  removeAllBears: () => set({ bears: 0 }),
+  updateBears: (newBears) => set({ bears: newBears }),
+}));
 
-export const BearCounter = () : React.ReactNode => {
-    return(
+export const BearCounter = () => {
+  const { bears, increasePopulation, removeAllBears } = useStore(); // ✅ No more TypeScript error!
 
-        <div className="bear-counter-root">
-            <p>X bears in my zoo!</p>
-            <button>Add bears</button>
-        </div>
-    )
-
+  return (
+    <div className="bear-counter-root">
+      <p>{bears} bears in my zoo!</p>{" "}
+      {/* ✅ TypeScript now knows bears exists */}
+      <button onClick={increasePopulation}>Add bears</button>
+      <button onClick={removeAllBears}>Remove all bears</button>
+    </div>
+  );
 };
 
 export default BearCounter;
